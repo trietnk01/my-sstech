@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "d2f20bd1-1c90-407f-871a-1758e31217cd",
+		"name": "User",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31572820"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreateUser{\r\n    createUser(createUserInput:{username:\"hrsstech\",password:\"246357\",email:\"hrsstech@dienkim.vn\",display_name:\"HR SStech\"}){\r\n        status\r\n        message\r\n        item{\r\n            _id\r\n            username\r\n            email\r\n            display_name\r\n            token\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\r\n  login(email: \"hrsstech@dienkim.vn\", password: \"246357\") {\r\n    status\r\n    message\r\n    item{\r\n        _id\r\n        username\r\n        display_name\r\n        email\r\n        token\r\n    }\r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check valid token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CheckValidToken {\r\n  checkValidToken(token: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiMmI1Y2FhYTktZTUxNi00ZmI4LWIwNjAtY2YxNmMwZWJhNTRmIiwidXNlcm5hbWUiOiJocnBhcGF5YSIsImRpc3BsYXlfbmFtZSI6IkhSIFBhcGF5YSIsImVtYWlsIjoiaHJwYXBheWFAZGllbmtpbS52biIsImlhdCI6MTcxNDQxNzg5OSwiZXhwIjoxNzE0ODQ5ODk5fQ.U5LivDUcvD0RBdbhAYhQcimSV1605ATMreUpiOdocyQ\") {\r\n    status\r\n    message\r\n    item {\r\n      _id\r\n      username\r\n      email\r\n      display_name\r\n      token      \r\n    }    \r\n  }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get account",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Account{\r\n    account(id:\"9aff4a4f-3161-42ca-8ff2-3290037c8af2\"){\r\n       status\r\n       message\r\n       item{\r\n         _id\r\n        username\r\n        displayName\r\n        token\r\n       }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Publisher unauthenticated",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query FindAllUsersUnauthenticated {\r\n    findAllUsersUnauthenticated{\r\n        status\r\n        message\r\n        list{\r\n            _id\r\n            displayName\r\n            username\r\n            email\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation Logout{\r\n    logout{\r\n        status\r\n        message        \r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
