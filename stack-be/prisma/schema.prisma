@@ -12,26 +12,12 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-model User {
+model user {
   id    Int     @default(autoincrement()) @id
   username String @unique
   password String
   email String  @unique    
   fullname  String
   token String? @db.Text
-  posts Post[]
   @@map("users")
-}
-model Post{
-  id Int @id @default(autoincrement())
-  user_id Int
-  title String
-  summary String @db.TinyText
-  description String @db.Text
-  content String  
-  published Boolean
-  user User @relation(fields:[user_id],references:[id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  @@map("posts")
 }

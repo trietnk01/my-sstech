@@ -1,6 +1,6 @@
 import { IUser } from "@/types/user";
 import { UserService } from "@/user/user.service";
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 @Injectable()
@@ -64,6 +64,8 @@ export class AuthService {
       const payload: IUser = userDecode.payload;
       const signature: string = userDecode.signature;
       let item: IUser = null;
+      console.log("token = ", token);
+      console.log("user = ", user);
       if (
         payload.id === user.id &&
         payload.username === user.username &&
@@ -80,6 +82,8 @@ export class AuthService {
           const signatureV2: string = decodeV2.signature;
           if (signature === signatureV2) {
             item = user;
+          } else {
+            throw new UnauthorizedException();
           }
         }
       }

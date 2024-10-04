@@ -15,10 +15,6 @@ const PublicRoutes = {
     {
       path: "/",
       element: <HomePage />
-    },
-    {
-      path: "/video",
-      element: <VideoPage />
     }
   ]
 };

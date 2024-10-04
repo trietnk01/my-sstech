@@ -10,9 +10,7 @@ const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     const init = async () => {
       try {
         let isValid: boolean = true;
-        const token: string = window.localStorage.getItem("access_token")
-          ? (window.localStorage.getItem("access_token") as string)
-          : "";
+        const token: string = window.localStorage.getItem("access_token") as string;
         if (!token) {
           isValid = false;
         } else {
@@ -21,7 +19,7 @@ const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
             headers: { isShowLoading: true }
           });
           const { statusCode, data } = res.data;
-          if (statusCode !== 200 && statusCode !== 201) {
+          if (parseInt(statusCode) !== 200 && parseInt(statusCode) !== 201) {
             isValid = false;
           } else {
             if (!data) {
@@ -52,8 +50,7 @@ const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     );
     if (res && res.data) {
       const { statusCode, data } = res.data;
-      if (statusCode === 200 || statusCode === 201) {
-        console.log("item = ", data);
+      if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
         const { id, username, email, fullname, token } = data;
         const user: IUser = { id, username, email, fullname, token };
         window.localStorage.setItem("access_token", token);
@@ -69,10 +66,9 @@ const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   };
   const logout = async () => {
     const res = await axios.post("/auth/logout", { headers: { isShowLoading: true } });
-
     if (res && res.data) {
       const { statusCode, message, data } = res.data;
-      if (statusCode === 200 || statusCode === 201) {
+      if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
         window.localStorage.removeItem("access_token");
         dispatch(logoutAction());
       }
