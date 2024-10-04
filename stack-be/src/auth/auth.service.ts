@@ -11,10 +11,10 @@ export class AuthService {
     private jwt: JwtService
   ) {}
 
-  validateUser = async (username: string, pass: string) => {
-    const user = await this.userService.findByUsername(username);
+  validateUser = async (email: string, password: string) => {
+    const user = await this.userService.findByEmail(email);
     if (user) {
-      const isValid = this.userService.isValidPassword(pass, user.password);
+      const isValid = this.userService.isValidPassword(password, user.password);
       if (isValid === true) {
         return user;
       }
@@ -32,18 +32,16 @@ export class AuthService {
         email,
         fullname
       };
-      const token: string = await this.jwt.signAsync(payload, {
+      const token: string = await this.jwt.sign(payload, {
         secret: this.confService.get<string>("JWT_ACCESS_TOKEN_SECRET")
       });
       await this.userService.updateUserToken(id, token);
       return {
-        token,
-        user: {
-          id,
-          username,
-          email,
-          fullname
-        }
+        id,
+        username,
+        email,
+        fullname,
+        token
       };
     } catch (err) {
       throw new BadRequestException(err.message);
@@ -56,6 +54,36 @@ export class AuthService {
       return {
         action: "logout"
       };
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
+  };
+  checkValidToken = async (token: string, user: IUser) => {
+    try {
+      const userDecode: any = this.jwt.decode(token, { complete: true });
+      const payload: IUser = userDecode.payload;
+      const signature: string = userDecode.signature;
+      let item: IUser = null;
+      if (
+        payload.id === user.id &&
+        payload.username === user.username &&
+        payload.email === user.email
+      ) {
+        const data: IUser | null | undefined = await this.userService.findUserByIdUsernameEmail(
+          user.id,
+          user.username,
+          user.email
+        );
+        if (data) {
+          const tokenV2: string = data.token;
+          const decodeV2: any = this.jwt.decode(tokenV2, { complete: true });
+          const signatureV2: string = decodeV2.signature;
+          if (signature === signatureV2) {
+            item = user;
+          }
+        }
+      }
+      return item;
     } catch (err) {
       throw new BadRequestException(err.message);
     }

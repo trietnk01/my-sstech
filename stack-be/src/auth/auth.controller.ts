@@ -1,8 +1,9 @@
-import { Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
 
-import { Public, User } from "@/decorator/customize";
+import { CurrentUser, Public, ResponseMessage } from "@/decorator/customize";
 import { IUser } from "@/types/user";
 import { AuthService } from "./auth.service";
+import { QueryDto } from "./dto/query.dto";
 import { LocalAuthGuard } from "./local-auth.guard";
 
 @Controller("auth")
@@ -11,24 +12,25 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
+  @ResponseMessage("Login user successfully")
   @Post("/login")
-  login(@User() user: IUser) {
+  login(@CurrentUser() user: IUser) {
     return this.auth.login(user);
   }
 
+  @Get("/check-valid-token")
+  @ResponseMessage("Check valid token")
+  checkValidToken(@Query() query: QueryDto, @CurrentUser() user: IUser) {
+    return this.auth.checkValidToken(query.token, user);
+  }
+
   @Get("/profile")
-  getProfile(@User() user: IUser) {
+  getProfile(@CurrentUser() user: IUser) {
     return user;
   }
 
-  @Get("/logout")
-  logout(@User() user: IUser) {
+  @Post("/logout")
+  logout(@CurrentUser() user: IUser) {
     return this.auth.logout(user);
-  }
-
-  @Public()
-  @Get("/account")
-  getAccount() {
-    return { account: "account" };
   }
 }

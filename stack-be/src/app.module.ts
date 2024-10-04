@@ -1,10 +1,10 @@
-import { AppService } from "@/app.service";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
-import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
+import { UserModule } from "./user/user.module";
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -16,8 +16,8 @@ import { AuthModule } from "./auth/auth.module";
       rootPath: join(__dirname, "..", "public")
     }),
     UserModule,
-    AuthModule
-  ],
-  providers: [AppService]
+    AuthModule,
+    ProductModule
+  ]
 })
 export class AppModule {}

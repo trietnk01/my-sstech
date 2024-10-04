@@ -1,0 +1,89 @@
+@import "color.scss";
+@import "font.scss";
+.colMenu {
+  width: 15%;
+}
+.colMain {
+  width: 85%;
+  padding: 10px;
+}
+.container {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(5, 5, 5, 0.06);
+  border-radius: 5px;
+  padding: 10px;
+}
+.titleHeading {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: #e6f4ff;
+  color: #1677ff;
+  padding: 0px 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.controlBox {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  height: 60px;
+  .filterBox {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    column-gap: 10px;
+    .searchText {
+      width: 400px;
+    }
+    .selectedText {
+      width: 600px;
+    }
+  }
+  .actionBox {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    column-gap: 10px;
+  }
+}
+.loaderBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.boxDragDropFile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 2;
+  border: 1px solid rgba(5, 5, 5, 0.06);
+  border-radius: 3px;
+  padding: 2px;
+  cursor: pointer;
+}
+.boxImage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 2;
+}
+.categoryNewsBox {
+  margin-top: 30px;
+}
+.boxUploader {
+  width: 500px;
+  margin-top: 10px;
+}
+.removeFeaturedImg {
+  margin-top: 10px;
+}
+.newsContentBox {
+  height: 600px;
+}

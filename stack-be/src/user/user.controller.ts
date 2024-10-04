@@ -16,8 +16,8 @@ export class UserController {
 
   @ResponseMessage("Get user by username param successfully")
   @Get()
-  findByUsername(@Query() query: QueryUserDto) {
-    return this.userService.findByUsername(query.username);
+  findByEmail(@Query() query: QueryUserDto) {
+    return this.userService.findByEmail(query.username);
   }
 
   @ResponseMessage("Get user by username and role param successfully")

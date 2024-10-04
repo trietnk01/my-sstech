@@ -22,8 +22,8 @@ export class UserService {
       }
     });
   };
-  findByUsername = (username: string) => {
-    return this.prisma.user.findUnique({ where: { username } });
+  findByEmail = (email: string) => {
+    return this.prisma.user.findUnique({ where: { email } });
   };
   isValidPassword = (password: string, hash: string) => {
     return compareSync(password, hash);
@@ -33,5 +33,8 @@ export class UserService {
   };
   findUserByToken = (token: string) => {
     return this.prisma.user.findFirstOrThrow({ where: { token } });
+  };
+  findUserByIdUsernameEmail = (id: number, username: string, email: string) => {
+    return this.prisma.user.findFirstOrThrow({ where: { id, username, email } });
   };
 }
