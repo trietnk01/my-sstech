@@ -43,19 +43,39 @@ const ProductFrm = () => {
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { title, category, description } = values;
     if (searchParams.get("action")) {
-      let res: any = null;
-      let frmData: any = new FormData();
-      frmData.append("title", title);
-      frmData.append("category", category);
-      frmData.append("description", description);
+      let dataSaved: any = {
+        title,
+        category,
+        description
+      };
       switch (searchParams.get("action")) {
         case "add":
-          res = await axios.post("/product/save", frmData, { headers: { isShowLoading: true } });
-          console.log("res = ", res);
+          const res: any = await axios.post("/product/save", dataSaved, {
+            headers: { isShowLoading: true }
+          });
+          const { statusCode, data } = res.data;
+          if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
+            const { id } = data;
+            Toast.fire({
+              icon: "success",
+              title: "Create product successfully"
+            });
+            navigate(`/admin/product/form?action=edit&id=${id}`);
+          }
           break;
         case "edit":
-          const id = searchParams.get("id");
-          if (id) {
+          if (searchParams.get("id")) {
+            dataSaved["id"] = searchParams.get("id");
+            const res: any = await axios.post("/product/save", dataSaved, {
+              headers: { isShowLoading: true }
+            });
+            const { statusCode } = res.data;
+            if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
+              Toast.fire({
+                icon: "success",
+                title: "Update product successfully"
+              });
+            }
           }
           break;
       }
@@ -140,7 +160,6 @@ const ProductFrm = () => {
     <Form form={frmProduct} layout="vertical" onFinish={onFinish} name="newsFrm">
       <h2 className={styles.titleHeading}>Create product</h2>
       <Flex justify="flex-end" gap={10}>
-        <Button type="primary" icon={<PlusOutlined />} size="large" onClick={handleProductNew} />
         <Button htmlType="submit" type="primary" icon={<SaveOutlined />} size="large" />
         <Button type="primary" icon={<BackwardFilled />} size="large" danger onClick={handleBack} />
       </Flex>

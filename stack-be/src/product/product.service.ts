@@ -6,10 +6,7 @@ import { PrismaService } from "@/prisma/prisma.service";
 
 @Injectable()
 export class ProductService {
-  constructor(
-    private confService: ConfigService,
-    private prisma: PrismaService
-  ) {}
+  constructor(private confService: ConfigService) {}
   getCategoryProduct = async () => {
     try {
       const res: any = await axios.get(
@@ -77,13 +74,21 @@ export class ProductService {
   };
   save = async (prodInput: ProductInputDto) => {
     try {
-      return this.prisma.product.create({
-        data: {
-          title: prodInput.title,
-          category: prodInput.category,
-          description: prodInput.description
-        }
-      });
+      let res: any = null;
+      if (!prodInput.id) {
+        res = await axios.post(`${this.confService.get<string>("API_PRODUCT")}/add`, prodInput, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+      } else {
+        res = await axios.put(
+          `${this.confService.get<string>("API_PRODUCT")}/${prodInput.id}`,
+          prodInput,
+          {
+            headers: { "Content-Type": "multipart/form-data" }
+          }
+        );
+      }
+      return res.data;
     } catch (err: any) {
       throw new BadRequestException(err.message);
     }

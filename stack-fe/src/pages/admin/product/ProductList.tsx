@@ -185,16 +185,6 @@ const ProductList = () => {
           />
           <Button type="primary" icon={<SearchOutlined />} size="large" onClick={handleSearch} />
         </div>
-        <div className={styles.actionBox}>
-          <Button type="primary" icon={<PlusOutlined />} size="large" onClick={handleAddItem} />
-          <Button
-            type="primary"
-            icon={<DeleteOutlined />}
-            size="large"
-            danger
-            onClick={handleDeleteMulti}
-          />
-        </div>
       </div>
       <Table
         rowSelection={rowSelection}

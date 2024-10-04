@@ -64,8 +64,6 @@ export class AuthService {
       const payload: IUser = userDecode.payload;
       const signature: string = userDecode.signature;
       let item: IUser = null;
-      console.log("token = ", token);
-      console.log("user = ", user);
       if (
         payload.id === user.id &&
         payload.username === user.username &&
