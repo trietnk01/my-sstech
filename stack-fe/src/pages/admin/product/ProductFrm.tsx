@@ -1,30 +1,12 @@
 import styles from "@/assets/scss/admin-layout.module.scss";
 import styleProductDetail from "@/assets/scss/product-detail.module.scss";
-import useAuth from "@/hooks/useAuth";
-import IMediaSource from "@/types/media-source";
-import { BackwardFilled, DeleteOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Col,
-  Flex,
-  Form,
-  FormProps,
-  Image,
-  Input,
-  Row,
-  Select,
-  Space,
-  Spin,
-  Splitter
-} from "antd";
+import axios from "@/utils/axios";
+import { BackwardFilled } from "@ant-design/icons";
+import { Button, Col, Flex, Form, Row, Space, Spin, Splitter } from "antd";
 import React from "react";
-import { FileUploader } from "react-drag-drop-files";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "@/utils/axios";
-import Loadable from "@/components/Loadable";
 
 interface IReviews {
   rating: number;
