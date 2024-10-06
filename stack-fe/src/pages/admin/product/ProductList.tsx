@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 type TablePaginationConfig = Exclude<GetProp<TableProps, "pagination">, boolean>;
 interface IProducts {
-  key: React.Key;
+  key: string;
   id: number;
   title: string;
   category: string;
@@ -104,7 +104,7 @@ const ProductList = () => {
             const items: IProducts[] = list;
             const nextState: IProducts[] = produce(items, (drafState) => {
               drafState.forEach((item) => {
-                item.key = item.id;
+                item.key = item.id.toString();
               });
             });
             setProductData(nextState);
@@ -161,12 +161,13 @@ const ProductList = () => {
       });
     }
   };
-  const handleTableChange: TableProps["onChange"] = (pagination, filters, sorter) => {
+  const handleTableChange: TableProps<IProducts>["onChange"] = (pagination, filters) => {
     setTableParams({
       pagination,
-      filters,
-      ...sorter
+      filters
     });
+
+    // `dataSource` is useless since `pageSize` changed
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
       setProductData([]);
     }
@@ -187,7 +188,6 @@ const ProductList = () => {
         </div>
       </div>
       <Table
-        rowSelection={rowSelection}
         columns={columns}
         dataSource={productData}
         pagination={tableParams.pagination}

@@ -14,6 +14,7 @@ import {
   Row,
   Select,
   Space,
+  Spin,
   Splitter
 } from "antd";
 import React from "react";
@@ -23,6 +24,8 @@ import "react-quill/dist/quill.snow.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "@/utils/axios";
+import Loadable from "@/components/Loadable";
+const ImageProduct = React.lazy(() => import("@/components/ImageProduct"));
 interface IReviews {
   rating: number;
   comment: string;
@@ -103,7 +106,12 @@ const ProductFrm = () => {
             setCategoryProductData(categoryProductList);
           }
         })
-        .catch((err: any) => {});
+        .catch((err: any) => {
+          Toast.fire({
+            icon: "error",
+            title: err.message
+          });
+        });
     };
     loadSelectedCategoryProduct();
   }, []);
@@ -142,7 +150,6 @@ const ProductFrm = () => {
             meta,
             images
           } = data;
-          console.log("dimensions = ", dimensions);
           frmProduct.setFieldValue("title", title);
           frmProduct.setFieldValue("description", description);
           frmProduct.setFieldValue("category", category);
@@ -168,9 +175,8 @@ const ProductFrm = () => {
     };
     loadProductDetail();
   }, [searchParams.get("id"), searchParams.get("action")]);
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {};
   return (
-    <Form form={frmProduct} layout="vertical" onFinish={onFinish} name="frmProduct">
+    <Form form={frmProduct} layout="vertical" name="frmProduct">
       <Row>
         <Col span={24}>
           <Row>
@@ -195,11 +201,11 @@ const ProductFrm = () => {
             <Col span={12}>
               {frmProduct.getFieldValue("images") &&
               frmProduct.getFieldValue("images").length > 0 ? (
-                <Image
-                  src={frmProduct.getFieldValue("images")[0]}
-                  width={600}
-                  className={styleProductDetail.productImage}
-                />
+                <React.Fragment>
+                  <React.Suspense fallback={<Spin size="small" />}>
+                    <ImageProduct urlImage={frmProduct.getFieldValue("images")[0]} />
+                  </React.Suspense>
+                </React.Fragment>
               ) : (
                 <React.Fragment></React.Fragment>
               )}
@@ -257,7 +263,7 @@ const ProductFrm = () => {
                         <div>
                           <Space size="small">
                             {frmProduct.getFieldValue("tags").map((elmt: string, idx: number) => {
-                              return elmt;
+                              return <div key={`tag-${idx}`}>{elmt}</div>;
                             })}
                           </Space>
                         </div>

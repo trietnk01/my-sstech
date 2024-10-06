@@ -48,7 +48,12 @@ const Login = () => {
           });
         }
       })
-      .catch((err) => {});
+      .catch((err: any) => {
+        Toast.fire({
+          icon: "error",
+          title: err.message
+        });
+      });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.sectionLogin} name="loginFrm">
@@ -111,7 +116,7 @@ const Login = () => {
         </button>
         <div className={styles.donHaveAccountRegisterLink}>
           <span className={styles.dontHaveAccount}>Don't have account?</span>&nbsp;
-          <Link to="/login" className={styles.registerLink}>
+          <Link to="/" className={styles.registerLink}>
             Register
           </Link>
         </div>

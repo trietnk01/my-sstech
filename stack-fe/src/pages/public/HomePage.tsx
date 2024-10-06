@@ -92,63 +92,67 @@ const HomePage = () => {
     navigate("/admin/login");
   };
   return (
-    <Form form={frmSignup} layout="vertical" onFinish={onFinish} name="newsFrm">
-      <Flex align="center" justify="center">
-        <Card
-          title="Register"
-          extra={
-            <Button type="primary" size="large" onClick={handleLogin}>
-              Login
-            </Button>
-          }
-          style={{ width: 300 }}
-        >
-          <Form.Item<FieldType>
-            label="Username"
-            name="username"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Please input your email!" },
-              {
-                type: "email",
-                message: "Please input valid email"
-              }
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Password retype"
-            name="password_confirmed"
-            rules={[{ required: true, message: "Please input your retyped password!" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item<FieldType>
-            label="Fullname"
-            name="fullname"
-            rules={[{ required: true, message: "Please input your fullname!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Button htmlType="submit" type="primary" size="large">
-            Submit
+    <Form
+      form={frmSignup}
+      layout="vertical"
+      onFinish={onFinish}
+      name="newsFrm"
+      style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <Card
+        title="Register"
+        extra={
+          <Button type="primary" size="large" onClick={handleLogin}>
+            Login
           </Button>
-        </Card>
-      </Flex>
+        }
+        style={{ width: 300 }}
+      >
+        <Form.Item<FieldType>
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item<FieldType>
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Please input your email!" },
+            {
+              type: "email",
+              message: "Please input valid email"
+            }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item<FieldType>
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item<FieldType>
+          label="Password retype"
+          name="password_confirmed"
+          rules={[{ required: true, message: "Please input your retyped password!" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item<FieldType>
+          label="Fullname"
+          name="fullname"
+          rules={[{ required: true, message: "Please input your fullname!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Button htmlType="submit" type="primary" size="large">
+          Submit
+        </Button>
+      </Card>
     </Form>
   );
 };
