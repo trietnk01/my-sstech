@@ -1,5 +1,5 @@
 import React from "react";
-import "@/assets/scss/style.min.css";
+import "@/assets/scss/style.min.scss";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "@/store";

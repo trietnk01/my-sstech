@@ -1,9 +1,21 @@
+import Swal from "sweetalert2";
 import useAuth from "@/hooks/useAuth";
 import styles from "@/assets/scss/login.module.scss";
 import { KeyOutlined, UserOutlined } from "@ant-design/icons";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+const Toast = Swal.mixin({
+  toast: true,
+  position: "bottom-start",
+  showConfirmButton: false,
+  timer: 8000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 interface IFormInput {
   email: string;
   password: string;
@@ -21,8 +33,22 @@ const Login = () => {
       password: ""
     }
   });
-  const onSubmit: SubmitHandler<IFormInput> = async (dataForm) => {
-    login(dataForm.email.toString().trim(), dataForm.password.toString());
+  const onSubmit: SubmitHandler<IFormInput> = (dataForm) => {
+    login(dataForm.email.toString().trim(), dataForm.password.toString())
+      .then((res) => {
+        if (res) {
+          Toast.fire({
+            icon: "success",
+            title: "Login successfully"
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: "Login fail"
+          });
+        }
+      })
+      .catch((err) => {});
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.sectionLogin} name="loginFrm">

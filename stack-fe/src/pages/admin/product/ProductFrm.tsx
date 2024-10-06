@@ -12,8 +12,21 @@ import Swal from "sweetalert2";
 import axios from "@/utils/axios";
 type FieldType = {
   title?: string;
-  category: string;
   description?: string;
+  category?: string;
+  featuredImg?: string;
+  price?: number;
+  discountPercentage?: number;
+  rating?: number;
+  stock?: number;
+  brand?: string;
+  sku?: string;
+  weight?: number;
+  warrantyInformation?: string;
+  shippingInformation?: string;
+  availabilityStatus?: string;
+  returnPolicy?: string;
+  minimumOrderQuantity?: number;
 };
 interface ICategoryProduct {
   value: string;
@@ -32,55 +45,10 @@ const Toast = Swal.mixin({
 });
 const ProductFrm = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [frmProduct] = Form.useForm();
+  const [productImage, setProductImage] = React.useState<string>("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [categoryProductData, setCategoryProductData] = React.useState<ICategoryProduct[]>([]);
-  const [base64Url, setBase64Url] = React.useState<string>("");
-  const [featuredImg, setFeaturedImg] = React.useState<IMediaSource | null>(null);
-  const [removedFeaturedImg, setRemovedFeaturedImg] = React.useState<boolean>(false);
-  const [newsHiddenImg, setNewsHiddenImg] = React.useState<string>("");
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    const { title, category, description } = values;
-    if (searchParams.get("action")) {
-      let dataSaved: any = {
-        title,
-        category,
-        description
-      };
-      switch (searchParams.get("action")) {
-        case "add":
-          const res: any = await axios.post("/product/save", dataSaved, {
-            headers: { isShowLoading: true }
-          });
-          const { statusCode, data } = res.data;
-          if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
-            const { id } = data;
-            Toast.fire({
-              icon: "success",
-              title: "Create product successfully"
-            });
-            navigate(`/admin/product/form?action=edit&id=${id}`);
-          }
-          break;
-        case "edit":
-          if (searchParams.get("id")) {
-            dataSaved["id"] = searchParams.get("id");
-            const res: any = await axios.post("/product/save", dataSaved, {
-              headers: { isShowLoading: true }
-            });
-            const { statusCode } = res.data;
-            if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
-              Toast.fire({
-                icon: "success",
-                title: "Update product successfully"
-              });
-            }
-          }
-          break;
-      }
-    }
-  };
   const handleBack = () => {
     navigate("/admin/product/list");
   };
@@ -108,6 +76,8 @@ const ProductFrm = () => {
   React.useEffect(() => {
     const onReset = () => {
       frmProduct.setFieldValue("title", "");
+      frmProduct.setFieldValue("category", "");
+      frmProduct.setFieldValue("featuredImg", "");
       frmProduct.setFieldValue("description", "");
     };
     const loadProductDetail = async () => {
@@ -121,82 +91,21 @@ const ProductFrm = () => {
         });
         const { statusCode, data } = res.data;
         if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
-          const { title, description, category, price } = data;
+          const { title, description, category, images, price } = data;
           frmProduct.setFieldValue("title", title);
           frmProduct.setFieldValue("category", category);
           frmProduct.setFieldValue("description", description);
+          setProductImage(images[0]);
         }
       }
     };
     onReset();
     loadProductDetail();
   }, [searchParams.get("id"), searchParams.get("action")]);
-  const handleUpload = (imageFile: any) => {
-    setBase64Url(URL.createObjectURL(imageFile));
-    setFeaturedImg(imageFile);
-    setRemovedFeaturedImg(false);
-  };
-  const handleRemovedFeaturedImg = () => {
-    setBase64Url("");
-    setFeaturedImg(null);
-    setRemovedFeaturedImg(true);
-  };
-  const handleTypeError = () => {
-    Toast.fire({
-      icon: "warning",
-      title: "File type must be .png | .jpg"
-    });
-  };
-  const handleSizeError = () => {
-    Toast.fire({
-      icon: "warning",
-      title: "Image file size must be less then 500KB"
-    });
-  };
-  const handleProductNew = () => {
-    navigate("/admin/product/form?action=add");
-  };
   return (
-    <Form form={frmProduct} layout="vertical" onFinish={onFinish} name="newsFrm">
+    <div>
       <h2 className={styles.titleHeading}>Create product</h2>
-      <Flex justify="flex-end" gap={10}>
-        <Button htmlType="submit" type="primary" icon={<SaveOutlined />} size="large" />
-        <Button type="primary" icon={<BackwardFilled />} size="large" danger onClick={handleBack} />
-      </Flex>
-      <div>
-        <Form.Item<FieldType>
-          label="Title"
-          name="title"
-          style={{ fontWeight: "bold" }}
-          rules={[{ required: true, message: "Please input your title!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item<FieldType>
-          name="category"
-          label="Category"
-          rules={[{ required: true, message: "Please select category!" }]}
-          initialValue=""
-          style={{ fontSize: "bold" }}
-          className={styles.categoryNewsBox}
-        >
-          <Select
-            size="large"
-            placeholder="Select a option and change input text above"
-            options={categoryProductData}
-          />
-        </Form.Item>
-        <Form.Item<FieldType>
-          label="Description"
-          name="description"
-          style={{ fontWeight: "bold" }}
-          rules={[{ required: true, message: "Please input product description!" }]}
-          className={styles.categoryNewsBox}
-        >
-          <Input.TextArea rows={4} />
-        </Form.Item>
-      </div>
-    </Form>
+    </div>
   );
 };
 export default ProductFrm;

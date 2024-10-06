@@ -41,14 +41,14 @@ const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     };
     init();
   }, []);
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     let isValid: boolean = true;
-    const res: any = await axios.post(
-      "/auth/login",
-      { username: email, password },
-      { headers: { isShowLoading: true } }
-    );
-    if (res && res.data) {
+    try {
+      const res: any = await axios.post(
+        "/auth/login",
+        { username: email, password },
+        { headers: { isShowLoading: true } }
+      );
       const { statusCode, data } = res.data;
       if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
         const { id, username, email, fullname, token } = data;
@@ -58,11 +58,14 @@ const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
       } else {
         isValid = false;
       }
+    } catch (err: any) {
+      isValid = false;
     }
     if (!isValid) {
       window.localStorage.removeItem("access_token");
       dispatch(logoutAction());
     }
+    return isValid;
   };
   const logout = async () => {
     const res = await axios.post("/auth/logout", { headers: { isShowLoading: true } });
