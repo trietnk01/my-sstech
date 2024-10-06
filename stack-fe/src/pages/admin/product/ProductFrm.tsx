@@ -25,7 +25,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "@/utils/axios";
 import Loadable from "@/components/Loadable";
-const ImageProduct = React.lazy(() => import("@/components/ImageProduct"));
+
 interface IReviews {
   rating: number;
   comment: string;
@@ -81,6 +81,14 @@ const Toast = Swal.mixin({
     toast.onmouseleave = Swal.resumeTimer;
   }
 });
+
+const delayForProductImage = (proCom: any) => {
+  const pm = new Promise((myResolve) => {
+    setTimeout(myResolve, 4000);
+  });
+  return pm.then(() => proCom);
+};
+const ImageProduct = React.lazy(() => delayForProductImage(import("@/components/ImageProduct")));
 const ProductFrm = () => {
   const navigate = useNavigate();
   const [frmProduct] = Form.useForm();
@@ -202,7 +210,17 @@ const ProductFrm = () => {
               {frmProduct.getFieldValue("images") &&
               frmProduct.getFieldValue("images").length > 0 ? (
                 <React.Fragment>
-                  <React.Suspense fallback={<Spin size="small" />}>
+                  <React.Suspense
+                    fallback={
+                      <Flex
+                        justify="center"
+                        align="center"
+                        style={{ width: "100%", height: "100%" }}
+                      >
+                        <Spin size="large" />
+                      </Flex>
+                    }
+                  >
                     <ImageProduct urlImage={frmProduct.getFieldValue("images")[0]} />
                   </React.Suspense>
                 </React.Fragment>
