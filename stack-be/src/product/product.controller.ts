@@ -10,7 +10,7 @@ export class ProductController {
   @Get("/list")
   @ResponseMessage("Get product list detail")
   getProduct(@Query() query: ProductQueryDto) {
-    return this.prodService.getProducts(query.q, query.page, query.limit);
+    return this.prodService.getProducts(query);
   }
 
   @Get("/detail/:id")

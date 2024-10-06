@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import axios from "axios";
 import { ProductInputDto } from "./dto/product-input.dto";
 import { PrismaService } from "@/prisma/prisma.service";
+import { ProductQueryDto } from "./dto/product-query.dto";
 
 @Injectable()
 export class ProductService {
@@ -24,14 +25,14 @@ export class ProductService {
       throw new BadRequestException(err.message);
     }
   };
-  getProducts = async (q: string, page: string, limit: string) => {
+  getProducts = async (query: ProductQueryDto) => {
     try {
-      const skip: number = (parseInt(page) - 1) * parseInt(limit);
+      const skip: number = (parseInt(query.page) - 1) * parseInt(query.limit);
       let where: any = {};
-      if (q) {
-        where["q"] = q;
+      if (query.q) {
+        where["q"] = query.q;
       }
-      where["limit"] = limit;
+      where["limit"] = query.limit;
       where["skip"] = skip;
       let txtSearch: string = "";
       for (const [key, val] of Object.entries(where)) {
@@ -39,17 +40,36 @@ export class ProductService {
       }
       txtSearch = txtSearch.slice(0, txtSearch.length - 1);
       let productUrl: string = "";
-      if (!q) {
-        productUrl = `${this.confService.get<string>("API_PRODUCT")}?${txtSearch}`;
-      } else {
-        productUrl = `${this.confService.get<string>("API_PRODUCT")}/search?${txtSearch}`;
-      }
-      const res: any = await axios.get(productUrl);
+      let res: any = null;
       let list: any = [];
       let total: number = 0;
+      if (query.q && query.category_product_id) {
+        productUrl = `${this.confService.get<string>("API_PRODUCT")}/category/${query.category_product_id}`;
+      } else {
+        if (query.q) {
+          productUrl = `${this.confService.get<string>("API_PRODUCT")}/search?${txtSearch}`;
+        } else {
+          if (query.category_product_id) {
+            productUrl = `${this.confService.get<string>("API_PRODUCT")}/category/${query.category_product_id}`;
+          } else {
+            productUrl = `${this.confService.get<string>("API_PRODUCT")}?${txtSearch}`;
+          }
+        }
+      }
+      res = await axios.get(productUrl);
       if (res && res.data && res.data.products && res.data.products.length > 0) {
         total = parseInt(res.data.total);
-        list = res.data.products;
+        if (query.q && query.category_product_id) {
+          const pattern = new RegExp(query.q);
+          let productsDraf: any[] = res.data.products;
+          productsDraf.forEach((elmt) => {
+            if (pattern.test(elmt.title)) {
+              list.push(elmt);
+            }
+          });
+        } else {
+          list = res.data.products;
+        }
       }
       return { list, total };
     } catch (err: any) {
