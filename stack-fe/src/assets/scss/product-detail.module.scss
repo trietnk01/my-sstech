@@ -1,0 +1,11 @@
+@import "color.scss";
+@import "font.scss";
+.productImage {
+  border: 1px solid #ccc;
+}
+.productLabel {
+  font-family: $f_GeneralSans_Bold;
+}
+.productRowDetail {
+  margin-top: 20px;
+}

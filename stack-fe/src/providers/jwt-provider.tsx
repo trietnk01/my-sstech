@@ -61,10 +61,6 @@ const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     } catch (err: any) {
       isValid = false;
     }
-    if (!isValid) {
-      window.localStorage.removeItem("access_token");
-      dispatch(logoutAction());
-    }
     return isValid;
   };
   const logout = async () => {
