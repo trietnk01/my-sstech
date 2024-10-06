@@ -9,7 +9,7 @@ export class UserController {
 
   @Public()
   @ResponseMessage("Create user successfully")
-  @Post()
+  @Post("register")
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -21,7 +21,7 @@ export class UserController {
   }
 
   @ResponseMessage("Get user by username and role param successfully")
-  @Get("/:username/:role")
+  @Get(":username/:role")
   findByUsernameParam(@Param("username") username: string, @Param("role") role: string) {
     return { username, role };
   }

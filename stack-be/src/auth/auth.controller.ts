@@ -13,23 +13,23 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @ResponseMessage("Login user successfully")
-  @Post("/login")
+  @Post("login")
   login(@CurrentUser() user: IUser) {
     return this.auth.login(user);
   }
 
-  @Get("/check-valid-token")
+  @Get("check-valid-token")
   @ResponseMessage("Check valid token")
   checkValidToken(@Query() query: QueryDto, @CurrentUser() user: IUser) {
     return this.auth.checkValidToken(query.token, user);
   }
 
-  @Get("/profile")
+  @Get("profile")
   getProfile(@CurrentUser() user: IUser) {
     return user;
   }
 
-  @Post("/logout")
+  @Post("logout")
   logout(@CurrentUser() user: IUser) {
     return this.auth.logout(user);
   }
