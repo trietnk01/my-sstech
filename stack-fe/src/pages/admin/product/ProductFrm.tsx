@@ -26,6 +26,28 @@ interface IDimension {
   height: number;
   depth: number;
 }
+interface IProductDetail {
+  title?: string;
+  description?: string;
+  category?: string;
+  images?: string[];
+  price?: number;
+  discountPercentage?: number;
+  rating?: number;
+  stock?: number;
+  tags?: string[];
+  brand?: string;
+  sku?: string;
+  weight?: number;
+  dimensions?: IDimension;
+  warrantyInformation?: string;
+  shippingInformation?: string;
+  availabilityStatus?: string;
+  reviews?: IReviews[];
+  returnPolicy?: string;
+  minimumOrderQuantity?: number;
+  meta?: IMeta[];
+}
 type FieldType = {
   title?: string;
   description?: string;
@@ -74,13 +96,14 @@ const ProductFrm = () => {
   const navigate = useNavigate();
   const [frmProduct] = Form.useForm();
   const { action, productId } = useParams();
+  const [productItem, setProductItem] = React.useState<IProductDetail>({});
   const handleBack = () => {
     navigate("/admin/product/list");
   };
   React.useEffect(() => {
     const loadProductDetail = async () => {
       if (action && productId && action === "detail") {
-        frmProduct.resetFields();
+        setProductItem({});
         const res: any = await axios.get(`/product/detail/${productId.toString()}`, {
           headers: { isShowLoading: true }
         });
@@ -108,7 +131,29 @@ const ProductFrm = () => {
             meta,
             images
           } = data;
-          frmProduct.setFieldValue("title", title);
+          setProductItem({
+            title,
+            description,
+            category,
+            price,
+            discountPercentage,
+            rating,
+            stock,
+            tags,
+            brand,
+            sku,
+            weight,
+            dimensions,
+            warrantyInformation,
+            shippingInformation,
+            availabilityStatus,
+            reviews,
+            returnPolicy,
+            minimumOrderQuantity,
+            meta,
+            images
+          });
+          /* frmProduct.setFieldValue("title", title);
           frmProduct.setFieldValue("description", description);
           frmProduct.setFieldValue("category", category);
           frmProduct.setFieldValue("price", price);
@@ -127,12 +172,13 @@ const ProductFrm = () => {
           frmProduct.setFieldValue("returnPolicy", returnPolicy);
           frmProduct.setFieldValue("minimumOrderQuantity", minimumOrderQuantity);
           frmProduct.setFieldValue("meta", meta);
-          frmProduct.setFieldValue("images", images);
+          frmProduct.setFieldValue("images", images); */
         }
       }
     };
     loadProductDetail();
   }, [productId, action]);
+  console.log("title = ", frmProduct.getFieldValue("title"));
   return (
     <Form form={frmProduct} layout="vertical" name="frmProduct">
       <Row>
@@ -157,8 +203,7 @@ const ProductFrm = () => {
           </Row>
           <Row style={{ marginTop: 20 }}>
             <Col span={8}>
-              {frmProduct.getFieldValue("images") &&
-              frmProduct.getFieldValue("images").length > 0 ? (
+              {productItem.images && productItem.images.length > 0 ? (
                 <React.Fragment>
                   <React.Suspense
                     fallback={
@@ -171,7 +216,7 @@ const ProductFrm = () => {
                       </Flex>
                     }
                   >
-                    <ImageProduct urlImage={frmProduct.getFieldValue("images")[0]} />
+                    <ImageProduct urlImage={productItem.images[0]} />
                   </React.Suspense>
                 </React.Fragment>
               ) : (
@@ -184,16 +229,16 @@ const ProductFrm = () => {
                   <Row>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Title</div>
-                      <div>{frmProduct.getFieldValue("title")}</div>
+                      <div>{productItem.title ? productItem.title : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Dimensions</div>
                       <div>
-                        {frmProduct.getFieldValue("dimensions") ? (
+                        {productItem.dimensions ? (
                           <Space size="small">
-                            <div>Width: {frmProduct.getFieldValue("dimensions")["width"]}</div>
-                            <div>Height: {frmProduct.getFieldValue("dimensions")["height"]}</div>
-                            <div>Depth: {frmProduct.getFieldValue("dimensions")["depth"]}</div>
+                            <div>Width: {productItem.dimensions["width"]}</div>
+                            <div>Height: {productItem.dimensions["height"]}</div>
+                            <div>Depth: {productItem.dimensions["depth"]}</div>
                           </Space>
                         ) : (
                           <React.Fragment></React.Fragment>
@@ -205,33 +250,34 @@ const ProductFrm = () => {
                   <Row className={styleProductDetail.productRowDetail}>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Category</div>
-                      <div>{frmProduct.getFieldValue("category")}</div>
+                      <div>{productItem.category ? productItem.category : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Price</div>
-                      <div>{frmProduct.getFieldValue("price")}</div>
+                      <div>{productItem.price ? productItem.price : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Discount Percentage</div>
-                      <div>{frmProduct.getFieldValue("discountPercentage")}</div>
+                      <div>
+                        {productItem.discountPercentage ? productItem.discountPercentage : ""}
+                      </div>
                     </Col>
                   </Row>
                   <Row className={styleProductDetail.productRowDetail}>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Rating</div>
-                      <div>{frmProduct.getFieldValue("rating")}</div>
+                      <div>{productItem.rating ? productItem.rating : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Stock</div>
-                      <div>{frmProduct.getFieldValue("stock")}</div>
+                      <div>{productItem.stock ? productItem.stock : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Tags</div>
-                      {frmProduct.getFieldValue("tags") &&
-                      frmProduct.getFieldValue("tags").length > 0 ? (
+                      {productItem.tags && productItem.tags.length > 0 ? (
                         <div>
                           <Space size="small">
-                            {frmProduct.getFieldValue("tags").map((elmt: string, idx: number) => {
+                            {productItem.tags.map((elmt: string, idx: number) => {
                               return <div key={`tag-${idx}`}>{elmt}</div>;
                             })}
                           </Space>
@@ -244,39 +290,47 @@ const ProductFrm = () => {
                   <Row className={styleProductDetail.productRowDetail}>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Brand</div>
-                      <div>{frmProduct.getFieldValue("brand")}</div>
+                      <div>{productItem.brand ? productItem.brand : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Sku</div>
-                      <div>{frmProduct.getFieldValue("sku")}</div>
+                      <div>{productItem.sku ? productItem.sku : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Weight</div>
-                      <div>{frmProduct.getFieldValue("weight")}</div>
+                      <div>{productItem.weight ? productItem.weight : ""}</div>
                     </Col>
                   </Row>
                   <Row className={styleProductDetail.productRowDetail}>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Warranty Information</div>
-                      <div>{frmProduct.getFieldValue("warrantyInformation")}</div>
+                      <div>
+                        {productItem.warrantyInformation ? productItem.warrantyInformation : ""}
+                      </div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Shipping Information</div>
-                      <div>{frmProduct.getFieldValue("shippingInformation")}</div>
+                      <div>
+                        {productItem.shippingInformation ? productItem.shippingInformation : ""}
+                      </div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Availability Status</div>
-                      <div>{frmProduct.getFieldValue("availabilityStatus")}</div>
+                      <div>
+                        {productItem.availabilityStatus ? productItem.availabilityStatus : ""}
+                      </div>
                     </Col>
                   </Row>
                   <Row className={styleProductDetail.productRowDetail}>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Return Policy</div>
-                      <div>{frmProduct.getFieldValue("returnPolicy")}</div>
+                      <div>{productItem.returnPolicy ? productItem.returnPolicy : ""}</div>
                     </Col>
                     <Col span={8}>
                       <div className={styleProductDetail.productLabel}>MinimumOrder Quantity</div>
-                      <div>{frmProduct.getFieldValue("minimumOrderQuantity")}</div>
+                      <div>
+                        {productItem.minimumOrderQuantity ? productItem.minimumOrderQuantity : ""}
+                      </div>
                     </Col>
                     <Col span={8}></Col>
                   </Row>
