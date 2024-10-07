@@ -1,7 +1,5 @@
-import { debounce } from "lodash";
 import styles from "@/assets/scss/admin-layout.module.scss";
 import axios from "@/utils/axios";
-import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
 import { produce } from "immer";
 import ldash from "lodash";
@@ -173,7 +171,7 @@ const ProductList = () => {
   }, []);
 
   const handleKeywordChange = (e: any) => {
-    const debounceSearch = debounce((search: string) => {
+    const debounceSearch = ldash.debounce((search: string) => {
       setKeyword(search);
       let nextState = ldash.cloneDeep(tableParams);
       if (nextState.pagination && nextState.pagination.current) {
