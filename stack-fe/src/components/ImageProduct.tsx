@@ -6,7 +6,7 @@ interface ImageProductProps {
   urlImage: string;
 }
 const ImageProduct: React.FC<ImageProductProps> = ({ urlImage }) => {
-  return <Image src={urlImage} width={600} className={styleProductDetail.productImage} />;
+  return <Image src={urlImage} className={styleProductDetail.productImage} />;
 };
 
 export default ImageProduct;

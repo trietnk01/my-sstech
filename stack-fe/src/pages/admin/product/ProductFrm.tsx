@@ -65,10 +65,9 @@ const Toast = Swal.mixin({
 });
 
 const delayForProductImage = (proCom: any) => {
-  const pm = new Promise((myResolve) => {
-    setTimeout(myResolve, 4000);
-  });
-  return pm.then(() => proCom);
+  return new Promise((myResolve) => {
+    setTimeout(myResolve, 2000);
+  }).then(() => proCom);
 };
 const ImageProduct = React.lazy(() => delayForProductImage(import("@/components/ImageProduct")));
 const ProductFrm = () => {
@@ -188,7 +187,7 @@ const ProductFrm = () => {
             </Col>
           </Row>
           <Row style={{ marginTop: 20 }}>
-            <Col span={12}>
+            <Col span={8}>
               {frmProduct.getFieldValue("images") &&
               frmProduct.getFieldValue("images").length > 0 ? (
                 <React.Fragment>
@@ -210,15 +209,15 @@ const ProductFrm = () => {
                 <React.Fragment></React.Fragment>
               )}
             </Col>
-            <Col span={12}>
+            <Col span={16}>
               <Splitter style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)", padding: 20 }}>
                 <Splitter.Panel>
                   <Row>
-                    <Col span={12}>
+                    <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Title</div>
                       <div>{frmProduct.getFieldValue("title")}</div>
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                       <div className={styleProductDetail.productLabel}>Dimensions</div>
                       <div>
                         {frmProduct.getFieldValue("dimensions") ? (
@@ -232,6 +231,7 @@ const ProductFrm = () => {
                         )}
                       </div>
                     </Col>
+                    <Col span={8}></Col>
                   </Row>
                   <Row className={styleProductDetail.productRowDetail}>
                     <Col span={8}>
