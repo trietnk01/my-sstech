@@ -2,11 +2,10 @@ import styles from "@/assets/scss/admin-layout.module.scss";
 import styleProductDetail from "@/assets/scss/product-detail.module.scss";
 import axios from "@/utils/axios";
 import { BackwardFilled } from "@ant-design/icons";
-import { Button, Col, Flex, Form, Row, Space, Spin, Splitter } from "antd";
+import { Button, Col, Flex, Row, Space, Spin, Splitter } from "antd";
 import React from "react";
 import "react-quill/dist/quill.snow.css";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface IReviews {
   rating: number;
@@ -26,7 +25,7 @@ interface IDimension {
   height: number;
   depth: number;
 }
-interface IProductDetail {
+interface IProduct {
   title?: string;
   description?: string;
   category?: string;
@@ -48,44 +47,6 @@ interface IProductDetail {
   minimumOrderQuantity?: number;
   meta?: IMeta[];
 }
-type FieldType = {
-  title?: string;
-  description?: string;
-  category?: string;
-  images?: string[];
-  price?: number;
-  discountPercentage?: number;
-  rating?: number;
-  stock?: number;
-  tags?: string[];
-  brand?: string;
-  sku?: string;
-  weight?: number;
-  dimensions?: IDimension;
-  warrantyInformation?: string;
-  shippingInformation?: string;
-  availabilityStatus?: string;
-  reviews?: IReviews[];
-  returnPolicy?: string;
-  minimumOrderQuantity?: number;
-  meta?: IMeta[];
-};
-interface ICategoryProduct {
-  value: string;
-  label: string;
-}
-const Toast = Swal.mixin({
-  toast: true,
-  position: "bottom-start",
-  showConfirmButton: false,
-  timer: 8000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.onmouseenter = Swal.stopTimer;
-    toast.onmouseleave = Swal.resumeTimer;
-  }
-});
-
 const delayForProductImage = (proCom: any) => {
   return new Promise((myResolve) => {
     setTimeout(myResolve, 2000);
@@ -94,9 +55,8 @@ const delayForProductImage = (proCom: any) => {
 const ImageProduct = React.lazy(() => delayForProductImage(import("@/components/ImageProduct")));
 const ProductFrm = () => {
   const navigate = useNavigate();
-  const [frmProduct] = Form.useForm();
   const { action, productId } = useParams();
-  const [productItem, setProductItem] = React.useState<IProductDetail>({});
+  const [productItem, setProductItem] = React.useState<IProduct>({});
   const handleBack = () => {
     navigate("/admin/product/list");
   };
@@ -153,34 +113,13 @@ const ProductFrm = () => {
             meta,
             images
           });
-          /* frmProduct.setFieldValue("title", title);
-          frmProduct.setFieldValue("description", description);
-          frmProduct.setFieldValue("category", category);
-          frmProduct.setFieldValue("price", price);
-          frmProduct.setFieldValue("discountPercentage", discountPercentage);
-          frmProduct.setFieldValue("rating", rating);
-          frmProduct.setFieldValue("stock", stock);
-          frmProduct.setFieldValue("tags", tags);
-          frmProduct.setFieldValue("brand", brand);
-          frmProduct.setFieldValue("sku", sku);
-          frmProduct.setFieldValue("weight", weight);
-          frmProduct.setFieldValue("dimensions", dimensions);
-          frmProduct.setFieldValue("warrantyInformation", warrantyInformation);
-          frmProduct.setFieldValue("shippingInformation", shippingInformation);
-          frmProduct.setFieldValue("availabilityStatus", availabilityStatus);
-          frmProduct.setFieldValue("reviews", reviews);
-          frmProduct.setFieldValue("returnPolicy", returnPolicy);
-          frmProduct.setFieldValue("minimumOrderQuantity", minimumOrderQuantity);
-          frmProduct.setFieldValue("meta", meta);
-          frmProduct.setFieldValue("images", images); */
         }
       }
     };
     loadProductDetail();
   }, [productId, action]);
-  console.log("title = ", frmProduct.getFieldValue("title"));
   return (
-    <Form form={frmProduct} layout="vertical" name="frmProduct">
+    <React.Fragment>
       <Row>
         <Col span={24}>
           <Row>
@@ -340,7 +279,7 @@ const ProductFrm = () => {
           </Row>
         </Col>
       </Row>
-    </Form>
+    </React.Fragment>
   );
 };
 export default ProductFrm;
