@@ -175,9 +175,21 @@ const ProductFrm = () => {
                       <div>
                         {productItem.dimensions ? (
                           <Space size="small">
-                            <div>Width: {productItem.dimensions["width"]}</div>
-                            <div>Height: {productItem.dimensions["height"]}</div>
-                            <div>Depth: {productItem.dimensions["depth"]}</div>
+                            {productItem.dimensions.hasOwnProperty("width") ? (
+                              <div>Width: {productItem.dimensions["width"]}</div>
+                            ) : (
+                              <React.Fragment></React.Fragment>
+                            )}
+                            {productItem.dimensions.hasOwnProperty("height") ? (
+                              <div>Height: {productItem.dimensions["height"]}</div>
+                            ) : (
+                              <React.Fragment></React.Fragment>
+                            )}
+                            {productItem.dimensions.hasOwnProperty("depth") ? (
+                              <div>Depth: {productItem.dimensions["depth"]}</div>
+                            ) : (
+                              <React.Fragment></React.Fragment>
+                            )}
                           </Space>
                         ) : (
                           <React.Fragment></React.Fragment>
