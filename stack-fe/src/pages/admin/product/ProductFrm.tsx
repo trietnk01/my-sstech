@@ -74,36 +74,9 @@ const ProductFrm = () => {
   const navigate = useNavigate();
   const [frmProduct] = Form.useForm();
   const { action, productId } = useParams();
-  const [categoryProductData, setCategoryProductData] = React.useState<ICategoryProduct[]>([]);
   const handleBack = () => {
     navigate("/admin/product/list");
   };
-  React.useEffect(() => {
-    const loadSelectedCategoryProduct = () => {
-      axios
-        .get(`/product/category`)
-        .then((res) => {
-          const { statusCode, data } = res.data;
-          if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
-            let categoryProductList: ICategoryProduct[] = data.map((item: any) => {
-              return { value: item.id, label: item.category_name };
-            });
-            categoryProductList.unshift({
-              value: "",
-              label: "-- Please choose on category --"
-            });
-            setCategoryProductData(categoryProductList);
-          }
-        })
-        .catch((err: any) => {
-          Toast.fire({
-            icon: "error",
-            title: err.message
-          });
-        });
-    };
-    loadSelectedCategoryProduct();
-  }, []);
   React.useEffect(() => {
     const loadProductDetail = async () => {
       if (action && productId && action === "detail") {
