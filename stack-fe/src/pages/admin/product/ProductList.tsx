@@ -38,16 +38,14 @@ interface ICategoryProduct {
   value: string;
   label: string;
 }
-const TIMEOUT_DEBOUNCE = 10;
+const TIMEOUT_DEBOUNCE = 40;
 const ProductList = () => {
   const navigate = useNavigate();
-  let mounted: boolean = true;
   const [categoryProductData, setCategoryProductData] = React.useState<ICategoryProduct[]>([]);
   const [productData, setProductData] = React.useState<IProducts[]>([]);
   const [categoryProductId, setCategoryProductId] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
   const [keyword, setKeyword] = React.useState<string>("");
-  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [tableParams, setTableParams] = React.useState<TableParams>({
     pagination: {
       current: 1,
