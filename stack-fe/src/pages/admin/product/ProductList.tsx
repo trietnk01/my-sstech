@@ -56,6 +56,12 @@ const ProductList = () => {
   });
   const columns: TableProps<IProducts>["columns"] = [
     {
+      title: "Sku",
+      dataIndex: "sku",
+      key: "sku",
+      render: (text) => text
+    },
+    {
       title: "Title",
       dataIndex: "title",
       key: "title",
