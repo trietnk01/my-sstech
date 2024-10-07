@@ -170,7 +170,7 @@ const ProductFrm = () => {
         <Col span={24}>
           <Row>
             <Col span={24}>
-              <h2 className={styles.titleHeading}>Create product</h2>
+              <h2 className={styles.titleHeading}>Product detail</h2>
             </Col>
           </Row>
           <Row>
