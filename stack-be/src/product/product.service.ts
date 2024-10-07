@@ -40,7 +40,6 @@ export class ProductService {
       }
       txtSearch = txtSearch.slice(0, txtSearch.length - 1);
       let productUrl: string = "";
-      let res: any = null;
       let list: any = [];
       let total: number = 0;
       if (query.q && query.category_product_id) {
@@ -56,9 +55,8 @@ export class ProductService {
           }
         }
       }
-      res = await axios.get(productUrl);
+      const res: any = await axios.get(productUrl);
       if (res && res.data && res.data.products && res.data.products.length > 0) {
-        total = parseInt(res.data.total);
         if (query.q && query.category_product_id) {
           const pattern = new RegExp(query.q.toLowerCase());
           let productsDraf: any[] = res.data.products;
@@ -67,8 +65,10 @@ export class ProductService {
               list.push(elmt);
             }
           });
+          total = list.length;
         } else {
           list = res.data.products;
+          total = parseInt(res.data.total);
         }
       }
       return { list, total };
