@@ -80,6 +80,12 @@ const ProductList = () => {
       render: (text) => text
     },
     {
+      title: "In stock",
+      dataIndex: "stock",
+      key: "stock",
+      render: (text) => text
+    },
+    {
       title: "Action",
       key: "action",
       render: (_, record) => {
