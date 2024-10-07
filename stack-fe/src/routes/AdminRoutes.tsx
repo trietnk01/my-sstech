@@ -25,7 +25,7 @@ const AdminRoutes = {
           element: <ProductList />
         },
         {
-          path: "form",
+          path: "form/:action/:productId",
           element: <ProductFrm />
         }
       ]

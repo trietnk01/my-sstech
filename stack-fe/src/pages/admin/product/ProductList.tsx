@@ -90,7 +90,7 @@ const ProductList = () => {
     }
   ];
   const handleDetail = (id: number) => () => {
-    navigate(`/admin/product/form?action=edit&id=${id}`);
+    navigate(`/admin/product/form/detail/${id}`);
   };
   const loadProductTable = (
     keyword: string,

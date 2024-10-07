@@ -5,7 +5,7 @@ import { BackwardFilled } from "@ant-design/icons";
 import { Button, Col, Flex, Form, Row, Space, Spin, Splitter } from "antd";
 import React from "react";
 import "react-quill/dist/quill.snow.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 interface IReviews {
@@ -73,7 +73,7 @@ const ImageProduct = React.lazy(() => delayForProductImage(import("@/components/
 const ProductFrm = () => {
   const navigate = useNavigate();
   const [frmProduct] = Form.useForm();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { action, productId } = useParams();
   const [categoryProductData, setCategoryProductData] = React.useState<ICategoryProduct[]>([]);
   const handleBack = () => {
     navigate("/admin/product/list");
@@ -106,13 +106,9 @@ const ProductFrm = () => {
   }, []);
   React.useEffect(() => {
     const loadProductDetail = async () => {
-      if (
-        searchParams.get("action") &&
-        searchParams.get("id") &&
-        searchParams.get("action") === "edit"
-      ) {
+      if (action && productId && action === "detail") {
         frmProduct.resetFields();
-        const res: any = await axios.get(`/product/detail/${searchParams.get("id")?.toString()}`, {
+        const res: any = await axios.get(`/product/detail/${productId.toString()}`, {
           headers: { isShowLoading: true }
         });
         const { statusCode, data } = res.data;
@@ -163,7 +159,7 @@ const ProductFrm = () => {
       }
     };
     loadProductDetail();
-  }, [searchParams.get("id"), searchParams.get("action")]);
+  }, [productId, action]);
   return (
     <Form form={frmProduct} layout="vertical" name="frmProduct">
       <Row>
