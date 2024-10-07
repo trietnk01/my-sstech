@@ -38,7 +38,7 @@ interface ICategoryProduct {
   value: string;
   label: string;
 }
-const TIMEOUT_DEBOUNCE = 40;
+const TIMEOUT_DEBOUNCE = 30;
 const ProductList = () => {
   const navigate = useNavigate();
   const [categoryProductData, setCategoryProductData] = React.useState<ICategoryProduct[]>([]);
