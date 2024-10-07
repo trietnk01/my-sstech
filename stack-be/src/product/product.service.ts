@@ -60,10 +60,10 @@ export class ProductService {
       if (res && res.data && res.data.products && res.data.products.length > 0) {
         total = parseInt(res.data.total);
         if (query.q && query.category_product_id) {
-          const pattern = new RegExp(query.q);
+          const pattern = new RegExp(query.q.toLowerCase());
           let productsDraf: any[] = res.data.products;
           productsDraf.forEach((elmt) => {
-            if (pattern.test(elmt.title)) {
+            if (pattern.test(elmt.title.toLowerCase())) {
               list.push(elmt);
             }
           });

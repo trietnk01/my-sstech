@@ -1,3 +1,4 @@
+import { debounce } from "lodash";
 import styles from "@/assets/scss/admin-layout.module.scss";
 import axios from "@/utils/axios";
 import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
@@ -37,8 +38,10 @@ interface ICategoryProduct {
   value: string;
   label: string;
 }
+const TIMEOUT_DEBOUNCE = 10;
 const ProductList = () => {
   const navigate = useNavigate();
+  let mounted: boolean = true;
   const [categoryProductData, setCategoryProductData] = React.useState<ICategoryProduct[]>([]);
   const [productData, setProductData] = React.useState<IProducts[]>([]);
   const [categoryProductId, setCategoryProductId] = React.useState<string>("");
@@ -77,8 +80,8 @@ const ProductList = () => {
         return (
           <React.Fragment>
             <Space size="middle">
-              <Button type="primary" onClick={handleEdit(record.id)}>
-                Edit
+              <Button type="primary" onClick={handleDetail(record.id)}>
+                Detail
               </Button>
             </Space>
           </React.Fragment>
@@ -86,11 +89,8 @@ const ProductList = () => {
       }
     }
   ];
-  const handleEdit = (id: number) => () => {
+  const handleDetail = (id: number) => () => {
     navigate(`/admin/product/form?action=edit&id=${id}`);
-  };
-  const handleAddItem = () => {
-    navigate("/admin/product/form?action=add");
   };
   const loadProductTable = (
     keyword: string,
@@ -107,32 +107,29 @@ const ProductList = () => {
         }
       })
       .then((res) => {
-        if (res && res.data) {
-          const { statusCode, data, message } = res.data;
-          console.log("res.data = ", res.data);
-          if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
-            const { list, total } = data;
-            setLoading(false);
-            const items: IProducts[] = list;
-            const nextState: IProducts[] = produce(items, (drafState) => {
-              drafState.forEach((item) => {
-                item.key = item.id.toString();
-              });
+        const { statusCode, data, message } = res.data;
+        if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
+          const { list, total } = data;
+          setLoading(false);
+          const items: IProducts[] = list;
+          const nextState: IProducts[] = produce(items, (drafState) => {
+            drafState.forEach((item) => {
+              item.key = item.id.toString();
             });
-            setProductData(nextState);
-            setTableParams({
-              ...tableParams,
-              pagination: {
-                ...tableParams.pagination,
-                total
-              }
-            });
-          } else {
-            Toast.fire({
-              icon: "error",
-              title: message
-            });
-          }
+          });
+          setProductData(nextState);
+          setTableParams({
+            ...tableParams,
+            pagination: {
+              ...tableParams.pagination,
+              total
+            }
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: message
+          });
         }
       })
       .catch((err: any) => {
@@ -145,43 +142,38 @@ const ProductList = () => {
   React.useEffect(() => {
     setLoading(true);
     loadProductTable(keyword, categoryProductId, tableParams.pagination?.current?.toString());
-  }, [tableParams.pagination?.current]);
+  }, [keyword, categoryProductId, tableParams.pagination?.current]);
   React.useEffect(() => {
-    const loadSelectedCategoryProduct = async () => {
-      const res: any = await axios.get("/product/category", { headers: { isShowLoading: false } });
-      const { statusCode, message, data } = res.data;
-      if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
-        let categoryProductList: ICategoryProduct[] = data.map((elmt: any) => {
-          return { value: elmt.id, label: elmt.category_name };
-        });
-        categoryProductList.unshift({
-          value: "",
-          label: "-- Please choose on category --"
-        });
-        setCategoryProductData(categoryProductList);
-      }
+    const loadSelectedCategoryProduct = () => {
+      axios.get("/product/category", { headers: { isShowLoading: false } }).then((res) => {
+        const { statusCode, message, data } = res.data;
+        if (parseInt(statusCode) === 200 || parseInt(statusCode) === 201) {
+          let categoryProductList: ICategoryProduct[] = data.map((elmt: any) => {
+            return { value: elmt.id, label: elmt.category_name };
+          });
+          categoryProductList.unshift({
+            value: "",
+            label: "-- Please choose on category --"
+          });
+          setCategoryProductData(categoryProductList);
+        }
+      });
     };
     loadSelectedCategoryProduct();
   }, []);
-  const handleSearch = () => {
-    setLoading(true);
-    loadProductTable(keyword, categoryProductId, "1");
-    let nextState = ldash.cloneDeep(tableParams);
-    if (nextState.pagination && nextState.pagination.current) {
-      nextState.pagination.current = 1;
-      setTableParams(nextState);
-    }
-  };
+
   const handleKeywordChange = (e: any) => {
-    setKeyword(e.target.value.toString());
+    const debounceSearch = debounce((search: string) => {
+      setKeyword(search);
+      let nextState = ldash.cloneDeep(tableParams);
+      if (nextState.pagination && nextState.pagination.current) {
+        nextState.pagination.current = 1;
+        setTableParams(nextState);
+      }
+    }, TIMEOUT_DEBOUNCE);
+    debounceSearch(e.target.value.toString());
   };
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange
-  };
+
   const handleTableChange: TableProps<IProducts>["onChange"] = (pagination, filters) => {
     setTableParams({
       pagination,
@@ -196,6 +188,7 @@ const ProductList = () => {
   const handleCategoryProductChange = (e: any) => {
     setCategoryProductId(e.toString());
   };
+
   return (
     <React.Fragment>
       <h2 className={styles.titleHeading}>Products</h2>
@@ -215,7 +208,6 @@ const ProductList = () => {
             options={categoryProductData}
             onChange={handleCategoryProductChange}
           />
-          <Button type="primary" icon={<SearchOutlined />} size="large" onClick={handleSearch} />
         </div>
       </div>
       <Table
