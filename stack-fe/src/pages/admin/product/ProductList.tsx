@@ -187,6 +187,11 @@ const ProductList = () => {
   };
   const handleCategoryProductChange = (e: any) => {
     setCategoryProductId(e.toString());
+    let nextState = ldash.cloneDeep(tableParams);
+    if (nextState.pagination && nextState.pagination.current) {
+      nextState.pagination.current = 1;
+      setTableParams(nextState);
+    }
   };
 
   return (
